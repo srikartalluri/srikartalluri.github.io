@@ -1,7 +1,7 @@
 let info = {
   name: "Srikar Talluri",
   logo_name: "srikar",
-  flat_picture: require("./src/assets/potrait.jpg"),
+  flat_picture: require("./src/assets/mee.svg"),
   config: {
     use_cookies: true,
     navbar: {

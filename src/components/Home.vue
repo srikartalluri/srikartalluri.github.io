@@ -121,7 +121,7 @@ export default {
 
 
 .container {
-  height: 100%;
+  height: 100svh;
 }
 
 .home-title {
@@ -130,17 +130,17 @@ export default {
 }
 
 img {
-  max-width: 300px;
+  max-width: 400px;
   /* margin-top: 60px; */
-  transform: rotateY(180deg);
+  /* transform: rotateY(180deg); */
 }
 
 @media only screen and (max-width: 580px) {
   img {
     object-fit: cover;
     border-radius: 50%;
-    /* height: 200px; */
-    width: 200px;
+    height: 400px;
+    width: 400px;
     /* margin-top: 10px; */
     /* margin-bottom: 10px; */
     border: 2px solid rgb(205, 205, 205);
