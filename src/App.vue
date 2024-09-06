@@ -17,8 +17,36 @@ import Portfolio from "./components/Portfolio";
 import Recommendation from "./components/Recommendation";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
-
 import info from "../info";
+
+import { initializeApp } from "firebase/app";
+import firebase from "firebase/compat/app";
+import { doc, getFirestore, collection, addDoc, getDoc, setDoc} from "firebase/firestore";
+
+console.log(firebase);
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDd_MnCtb_4edgHeM-9PPPMjJrRt6VE_jM",
+  authDomain: "clicker-bf254.firebaseapp.com",
+  projectId: "clicker-bf254",
+  storageBucket: "clicker-bf254.appspot.com",
+  messagingSenderId: "994580996870",
+  appId: "1:994580996870:web:8dd3f341a33193ed1c7487",
+  measurementId: "G-LZ69VBHLYS"
+};
+
+// if (!firebase.apps.length) {
+//   firebase.initializeApp(firebaseConfig);
+// } else {
+//   firebase.app(); // if already initialized, use that one
+// }
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+const clickRef = collection(db, "clicks");
+
 
 export default {
   name: "App",
@@ -36,6 +64,7 @@ export default {
     return {
       nightMode: false,
       config: info.config,
+      clickCount: 0,
     };
   },
   created() {
@@ -43,22 +72,13 @@ export default {
       this.nightMode = this.$cookie.get("nightMode") === "true" ? true : false;
     }
   },
-  mounted() {
-    // ["about", "contact", "skills", "portfolio"].forEach((l) => {
-    //   if (window.location.href.includes(l)) {
-    //     var elementPosition = document.getElementById(l).offsetTop;
-    //     window.scrollTo({ top: elementPosition - 35, behavior: "smooth" });
-    //   }
-    // });
-    console.log(window.location.href);
-    // ["resume"].forEach((l) => {
-    //   if (window.location.href.includes(l)) {
-    //     window.open("../pdfs/resume.pdf", "_blank");
-    //   }
-    // }); 
+  async mounted() {
+    await this.getClickCount();
+    console.log(this.clickCount);
+    await this.incrementClickCount();
+    console.log(this.clickCount);
+    await this.saveClickCount();
   },
-
-
 
   methods: {
     switchMode(mode) {
@@ -67,17 +87,43 @@ export default {
       }
       this.nightMode = mode;
     },
-    // scrollTo(ele) {
-    //   if (ele == "home") {
-    //     this.$router.push(`/`);
-    //     window.scrollTo({ top: -80, behavior: "smooth" });
-    //   } else {
-    //     var elementPosition = document.getElementById(ele).offsetTop;
-    //     window.scrollTo({ top: elementPosition - 35, behavior: "smooth" });
-    //     if (this.$router.history.current.path !== `/${ele}`)
-    //       this.$router.push(`/${ele}`);
-    //   }
-    // },
+    async incrementClickCount() {
+      this.clickCount += 1;
+      // await this.saveClickCount();
+    },
+    async saveClickCount() {
+      console.log("saving click count");
+      console.log(this.clickCount);
+
+      const docRef = doc(db, "clicks", "clickCounter");
+
+      await setDoc(docRef, {
+        numClicks: this.clickCount,
+      });
+
+      // await setDoc(doc(db, "cities", "LA"), {
+      //   name: "Los Angeles",
+      //   state: "CA",
+      //   country: "USA"
+      // });
+
+
+
+    },
+    async getClickCount() {
+      console.log("getting click count");
+      // const doc = await db.collection("clicks").doc("clickCounter").get();
+      
+      const docRef = doc(db, "clicks", "clickCounter");
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
+        this.clickCount = docSnap.data().numClicks;
+        console.log("click count", this.clickCount);
+      }
+      console.log("click count", this.clickCount);
+    },
   },
 };
 </script>
