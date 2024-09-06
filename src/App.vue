@@ -23,8 +23,6 @@ import { initializeApp } from "firebase/app";
 import firebase from "firebase/compat/app";
 import { doc, getFirestore, collection, addDoc, getDoc, setDoc} from "firebase/firestore";
 
-console.log(firebase);
-
 const firebaseConfig = {
   apiKey: "AIzaSyDd_MnCtb_4edgHeM-9PPPMjJrRt6VE_jM",
   authDomain: "clicker-bf254.firebaseapp.com",
@@ -74,9 +72,7 @@ export default {
   },
   async mounted() {
     await this.getClickCount();
-    console.log(this.clickCount);
     await this.incrementClickCount();
-    console.log(this.clickCount);
     await this.saveClickCount();
   },
 
@@ -92,37 +88,23 @@ export default {
       // await this.saveClickCount();
     },
     async saveClickCount() {
-      console.log("saving click count");
-      console.log(this.clickCount);
-
       const docRef = doc(db, "clicks", "clickCounter");
 
       await setDoc(docRef, {
         numClicks: this.clickCount,
       });
 
-      // await setDoc(doc(db, "cities", "LA"), {
-      //   name: "Los Angeles",
-      //   state: "CA",
-      //   country: "USA"
-      // });
-
 
 
     },
     async getClickCount() {
-      console.log("getting click count");
-      // const doc = await db.collection("clicks").doc("clickCounter").get();
       
       const docRef = doc(db, "clicks", "clickCounter");
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
         this.clickCount = docSnap.data().numClicks;
-        console.log("click count", this.clickCount);
       }
-      console.log("click count", this.clickCount);
     },
   },
 };
